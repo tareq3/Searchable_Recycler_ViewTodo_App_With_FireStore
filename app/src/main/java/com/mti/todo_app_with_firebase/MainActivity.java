@@ -1,10 +1,13 @@
 package com.mti.todo_app_with_firebase;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -110,24 +113,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private SearchView mSearchView;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
-     return true;
+        //Associate searchable configuration with the Searchview
+        SearchManager searchManager= (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+        mSearchView= (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+
+        //Listening to serach queary changes
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //filter recycler view when querry submitted
+                mAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //filter recycler view when text is changed
+                mAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_search) {
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-
+        // close search view on back button pressed
+        if (!mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+            return;
+        }
         super.onBackPressed();
     }
 

@@ -23,6 +23,7 @@ import dmax.dialog.SpotsDialog;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Primary List of Data
     List<ToDo> mToDoList=new ArrayList<ToDo>(
             Arrays.asList(
                     new ToDo("1","Eat","eating should be controlled"),
@@ -39,8 +40,11 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
 
     public EditText title,description; //as need to access from adapter
+
     public boolean isUpdate=false; //flag to check is update or is add new
-    public String idUpdate=""; //id of item need to be updated
+    
+    public String idSelectedItem=""; //id of item That is selected
+    
     ListItemAdapter mAdapter;
 
     SpotsDialog mAlertDialog;  //dmax dialog thirdparty
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteItem(int order) {
-        Toast.makeText(this, "Delete Item code should be here", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Delete Item at "+ order + " and id: "+idSelectedItem, Toast.LENGTH_SHORT).show();
         mToDoList.remove(order);
         loadData();
     }

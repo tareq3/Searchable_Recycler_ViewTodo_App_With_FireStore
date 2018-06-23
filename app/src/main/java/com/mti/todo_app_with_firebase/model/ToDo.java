@@ -13,8 +13,7 @@ public class ToDo {
 
     private String id,title,description;
 
-    public ToDo() {
-    }
+
 
     public ToDo(String id, String title, String description) {
         this.id = id;

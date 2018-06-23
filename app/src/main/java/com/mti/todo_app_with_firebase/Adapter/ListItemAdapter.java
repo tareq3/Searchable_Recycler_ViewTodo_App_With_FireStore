@@ -101,7 +101,7 @@ import java.util.List;
                     mMainActivity.description.setText(mToDoListFiltered.get(position).getDescription());
 
                     mMainActivity.isUpdate=true; //Set flag is update -true
-                    mMainActivity.idUpdate= mToDoListFiltered.get(position).getId();
+                    mMainActivity.idSelectedItem= mToDoListFiltered.get(position).getId();
 
                 }
             });

@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void addData(String s, String s1) {
 
-      //  mToDoList.add(new ToDo(""))
+        String id= UUID.randomUUID().toString();
+        mToDoList.add(new ToDo(id,s,s1));
     }
 
     private void loadData() {

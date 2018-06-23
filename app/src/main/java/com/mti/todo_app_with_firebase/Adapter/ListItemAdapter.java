@@ -61,17 +61,17 @@ import java.util.List;
 }
 
 
- public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> implements Filterable {
+ public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
 
      MainActivity mMainActivity;
 
      List<ToDo> mToDoListFiltered;
-     List<ToDo> mToDoList;
+
 
      public ListItemAdapter(MainActivity mainActivity, List<ToDo> toDoList) {
          mMainActivity = mainActivity;
          mToDoListFiltered = toDoList;
-         mToDoList=toDoList;
+
      }
 
      @NonNull
@@ -113,54 +113,4 @@ import java.util.List;
         }
 
         //this method for filtering
-     @Override
-     public Filter getFilter() {
-         return new Filter() {
-             @Override
-             protected FilterResults performFiltering(CharSequence constraint) {
-                 FilterResults filterResults=new FilterResults();
-                 // If the constraint (search string/pattern) is null
-                 // or its length is 0, i.e., its empty then
-                 // we just set the `values` property to the
-                 // original contacts list which contains all of them
-
-
-                 //constraint is the text we have written on searchbox
-                 String charString=constraint.toString();
-                 if(charString.isEmpty() || constraint==null || constraint.length()==0){
-                     mToDoListFiltered=mToDoList;
-                     filterResults.values=mToDoListFiltered;
-                     filterResults.count=mToDoListFiltered.size();
-
-                 }else{
-                     // Some search constraint has been passed
-                     // so let's filter accordingly
-
-                     List<ToDo> filteredList=new ArrayList<>();
-                     // We'll go through all the List and see
-                     // if they contain the supplied string
-                     for(ToDo row : mToDoList){
-                         // name match condition. this might differ depending on your requirement
-                         // here we are looking for title or description match
-                         if (row.getTitle().toLowerCase().contains(charString.toLowerCase())) {
-                             filteredList.add(row);
-                         }
-                     }
-                     mToDoListFiltered=filteredList;
-                     filterResults.values=mToDoListFiltered;
-                 }
-
-                 // Finally set the filtered values
-
-
-                 return filterResults;
-             }
-
-             @Override
-             protected void publishResults(CharSequence constraint, FilterResults results) {
-                mToDoListFiltered= (ArrayList<ToDo>) results.values;
-                notifyDataSetChanged();
-             }
-         };
-     }
- }
+   }

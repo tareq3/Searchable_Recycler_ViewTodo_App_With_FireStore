@@ -1,42 +1,23 @@
 package com.mti.todo_app_with_firebase;
 
-import android.app.SearchManager;
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mti.todo_app_with_firebase.Adapter.ListItemAdapter;
 import com.mti.todo_app_with_firebase.model.ToDo;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-
-import javax.annotation.Nullable;
 
 import dmax.dialog.SpotsDialog;
 
@@ -57,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
 
-    public MaterialEditText title,description; //as need to access from adapter
+    public EditText title,description; //as need to access from adapter
     public boolean isUpdate=false; //flag to check is update or is add new
     public String idUpdate=""; //id of item need to be updated
     ListItemAdapter mAdapter;
@@ -85,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         title=findViewById(R.id.title);
         description=findViewById(R.id.description);
+
         fab=findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,9 +90,19 @@ public class MainActivity extends AppCompatActivity {
 
         String id= UUID.randomUUID().toString();
         mToDoList.add(new ToDo(id,s,s1));
+
+        loadData();
+
     }
 
     private void loadData() {
+
+        mAlertDialog.show();
+
+        mAdapter= new ListItemAdapter(MainActivity.this,mToDoList);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAlertDialog.dismiss();
     }
 
 
@@ -145,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void deleteItem(int order) {
         Toast.makeText(this, "Delete Item code should be here", Toast.LENGTH_SHORT).show();
+        mToDoList.remove(order);
+        loadData();
     }
 
 }

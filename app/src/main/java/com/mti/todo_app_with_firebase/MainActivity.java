@@ -30,6 +30,7 @@ import com.mti.todo_app_with_firebase.model.ToDo;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,15 @@ import dmax.dialog.SpotsDialog;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<ToDo> mToDoList=new ArrayList<>();
+    List<ToDo> mToDoList=new ArrayList<ToDo>(
+            Arrays.asList(
+                    new ToDo("1","Eat","eating should be controlled"),
+                    new ToDo("2","Walk","walking is good for health"),
+                    new ToDo("3", "Salat", "Is the best meditation in this world")
+            )
+    );
 
-    FirebaseFirestore mFirestoreDB;
+
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManagerRecyler;
@@ -72,11 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //Init FireStore
-        mFirestoreDB=FirebaseFirestore.getInstance();
 
         //view
         mAlertDialog=new SpotsDialog(this); //third party
+
         title=findViewById(R.id.title);
         description=findViewById(R.id.description);
         fab=findViewById(R.id.fab);
@@ -84,11 +90,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add new
-                if(!isUpdate){
-                    setData(title.getText().toString(), description.getText().toString());
-                }else{
-                    updateData(title.getText().toString(),description.getText().toString());
-                }
+                addData(title.getText().toString(),description.getText().toString() );
+
             }
         });
 
@@ -99,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManagerRecyler);
 
         loadData();
+    }
+
+    private void addData(String s, String s1) {
+
+      //  mToDoList.add(new ToDo(""))
+    }
+
+    private void loadData() {
     }
 
 
@@ -131,84 +142,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
-    private void deleteItem(int index) {
-        mFirestoreDB.collection("ToDoList")
-                .document(mToDoList.get(index).getId())
-                    .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        loadData();
-                    }
-                });
+    private void deleteItem(int order) {
+        Toast.makeText(this, "Delete Item code should be here", Toast.LENGTH_SHORT).show();
     }
 
-    private void updateData(String s_title, String s_description) {
-        mFirestoreDB.collection("ToDoList").document(idUpdate)
-                .update("title",s_title,
-                        "description",s_description).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(MainActivity.this, "Update !", Toast.LENGTH_SHORT).show();
-            }
-        });
-        //Realtime Update refresh data
-        mFirestoreDB.collection("ToDoList").document(idUpdate).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                loadData();
-            }
-        });
-    }
-
-    private void setData(String s_title, String s_description) {
-        //Random Id
-        String id= UUID.randomUUID().toString();
-        Map<String, Object> todo=new HashMap<>();
-
-        todo.put("id", id);
-        todo.put("title", s_title);
-        todo.put("description", s_description);
-
-        mFirestoreDB.collection("ToDoList").document(id).set(todo).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                //refresh data
-                loadData();
-            }
-        });
-    }
-
-    private void loadData() {
-        mAlertDialog.show();
-        if(mToDoList.size()>0)
-            mToDoList.clear(); //remove old value
-
-        mFirestoreDB.collection("ToDoList")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                for(DocumentSnapshot documentSnapshot : task.getResult())
-                                {
-                                    ToDo toDo=new ToDo(documentSnapshot.getString("id"),
-                                            documentSnapshot.getString("title"),
-                                            documentSnapshot.getString("description"));
-
-                                    mToDoList.add(toDo);
-                                }
-
-                                mAdapter= new ListItemAdapter(MainActivity.this,mToDoList);
-                                mRecyclerView.setAdapter(mAdapter);
-
-                                mAlertDialog.dismiss();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }

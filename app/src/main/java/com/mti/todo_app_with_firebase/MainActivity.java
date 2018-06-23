@@ -13,6 +13,7 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -27,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mti.todo_app_with_firebase.Adapter.ListItemAdapter;
 import com.mti.todo_app_with_firebase.model.ToDo;
-import com.rengwuxian.materialedittext.MaterialEditText;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
 
-    public MaterialEditText title,description; //as need to access from adapter
+    public EditText title,description; //as need to access from adapter
     public boolean isUpdate=false; //flag to check is update or is add new
     public String idUpdate=""; //id of item need to be updated
     ListItemAdapter mAdapter;

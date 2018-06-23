@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,8 @@ import javax.annotation.Nullable;
 import dmax.dialog.SpotsDialog;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ShimmerFrameLayout mShimmerViewContainer;
 
     List<ToDo> mToDoList=new ArrayList<>();
 
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Init FireStore
         mFirestoreDB=FirebaseFirestore.getInstance();
+
+        mShimmerViewContainer=findViewById(R.id.shimmer_view_container);
 
         //view
         mAlertDialog=new SpotsDialog(this); //third party
@@ -181,7 +186,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        mAlertDialog.show();
+       // mAlertDialog.show();
+        mShimmerViewContainer.setVisibility(View.VISIBLE);
+        mShimmerViewContainer.startShimmerAnimation();
         if(mToDoList.size()>0)
             mToDoList.clear(); //remove old value
 
@@ -203,7 +210,9 @@ public class MainActivity extends AppCompatActivity {
                                 mAdapter= new ListItemAdapter(MainActivity.this,mToDoList);
                                 mRecyclerView.setAdapter(mAdapter);
 
-                                mAlertDialog.dismiss();
+                               // mAlertDialog.dismiss();
+                                mShimmerViewContainer.stopShimmerAnimation();
+                                mShimmerViewContainer.setVisibility(View.GONE);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
             @Override

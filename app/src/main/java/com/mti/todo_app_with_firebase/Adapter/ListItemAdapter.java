@@ -61,16 +61,18 @@ import java.util.List;
 }
 
 
- public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
+ public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> implements Filterable {
 
      MainActivity mMainActivity;
 
      List<ToDo> mToDoListFiltered;
+     List<ToDo> mToDoList;
 
 
      public ListItemAdapter(MainActivity mainActivity, List<ToDo> toDoList) {
          mMainActivity = mainActivity;
          mToDoListFiltered = toDoList;
+         mToDoList=toDoList;
 
      }
 
@@ -112,5 +114,21 @@ import java.util.List;
             return mToDoListFiltered.size();
         }
 
-        //this method for filtering
+     @Override
+     public Filter getFilter() {
+         return new
+                 Filter() {
+                     @Override
+                     protected FilterResults performFiltering(CharSequence constraint) {
+                         return null;
+                     }
+
+                     @Override
+                     protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                     }
+                 };
+     }
+
+     //this method for filtering
    }

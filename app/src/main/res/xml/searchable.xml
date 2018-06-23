@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Tareq Islam on 6/23/18 3:37 PM
+  ~
+  ~  Last modified 4/8/18 5:52 PM
+  -->
+
+<searchable
+    xmlns:android="http://schemas.android.com/apk/res/android"
+   android:label="@string/app_name"
+    android:hint="search_hint"
+    >
+
+</searchable>

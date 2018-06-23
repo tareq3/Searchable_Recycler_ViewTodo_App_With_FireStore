@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         loadData();
     }
 
-    private SearchView mSearchView;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 

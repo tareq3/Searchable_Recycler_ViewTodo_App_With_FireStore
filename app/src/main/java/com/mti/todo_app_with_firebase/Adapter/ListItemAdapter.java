@@ -148,6 +148,7 @@ import java.util.List;
                      }
                      mToDoListFiltered=filteredList;
                      filterResults.values=mToDoListFiltered;
+                    // filterResults.count=mTodoListFiltered;//this line is recomended to unhide for any filtering issue
                  }
 
                  // Finally set the filtered values

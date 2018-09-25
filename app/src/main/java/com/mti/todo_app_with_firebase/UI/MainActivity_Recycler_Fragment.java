@@ -50,8 +50,15 @@ import java.util.UUID;
 /***
  * Created by Tareq on 24,September,2018.
  */
+
+
 public class MainActivity_Recycler_Fragment extends Fragment implements MainActivityChannel,ItemClickDataChannel {
 
+   public interface MainActivityRecyclerFragmentChannel{
+        void passResult(ArrayList<?> params); //passes the Task Success result
+
+        void passData(ArrayList<?> params); //passes the data from frag to activity
+    }
 
     //Primary List of Data
     List<ToDo> mToDoList = new ArrayList<ToDo>(
@@ -82,11 +89,11 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
         super.onAttach(context);
         mContext = context;
 
-        //Todo: Initializing the interfce
+        //Todo: Initializing the interfce which is implemented
         ((MainActivity) getActivity()).mMainActivityChannel = this; //initializing interface in this class
 
 
-
+        //As mainActivity using Fragment Interface || This is something odd
         mMainActivityRecyclerFragmentChannel = (MainActivityRecyclerFragmentChannel) context;
     }
 
@@ -110,7 +117,8 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
 
         mRecyclerView.setLayoutManager(mLayoutManagerRecyler);
         mAdapter = new ListItemAdapter(mContext);
-        mAdapter.setItemClickDataChannel(this);
+
+        mAdapter.setItemClickDataChannel(this);// initializing the SetItemClickDataChannel interface from Adapter
 
 
         loadData();
@@ -119,13 +127,8 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
 
     private void loadData() {
 
-        mAdapter.updateAdapter(mToDoList);
-        mRecyclerView.setAdapter(mAdapter);
-
-
-
-        //Send meesage to Activity Data Loaded using interface
-        mMainActivityRecyclerFragmentChannel.passResult(new ArrayList<Object>(Arrays.asList("Data loaded")));
+        mAdapter.updateAdapter(mToDoList); //update data for adapter
+        mRecyclerView.setAdapter(mAdapter); //set Adapter once
 
     }
 
@@ -134,14 +137,20 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
         String id = UUID.randomUUID().toString();
         mToDoList.add(new ToDo(id, s, s1));
 
-        loadData();
+        mAdapter.updateAdapter(mToDoList);
+        //Send meesage to Activity Data Loaded using interface
+        mMainActivityRecyclerFragmentChannel.passResult(new ArrayList<Object>(Arrays.asList("Data Updated")));
 
     }
 
     private void deleteItem(int order) {
         Toast.makeText(mContext, "Delete Item at " + order, Toast.LENGTH_SHORT).show();
         mToDoList.remove(order);
-        loadData();
+
+        mAdapter.updateAdapter(mToDoList);
+        //Send meesage to Activity Data Loaded using interface
+        mMainActivityRecyclerFragmentChannel.passResult(new ArrayList<Object>(Arrays.asList("Data Updated")));
+
     }
 
     @Override
@@ -219,11 +228,7 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
     }
 
 
-    public  interface MainActivityRecyclerFragmentChannel{
-        void passResult(ArrayList<?> params);
 
-        void passData(ArrayList<?> params);
-    }
 
 }
 

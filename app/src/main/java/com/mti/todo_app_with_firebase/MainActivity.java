@@ -9,18 +9,22 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.mti.todo_app_with_firebase.Adapter.ItemClickDataChannel;
-
-import com.mti.todo_app_with_firebase.Adapter.ListItemAdapter;
 import com.mti.todo_app_with_firebase.UI.MainActivity_Recycler_Fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import dmax.dialog.SpotsDialog;
 
-public class MainActivity extends AppCompatActivity implements  MainActivity_Recycler_Fragment.MainActivityRecyclerFragmentChannel {
+public class MainActivity extends AppCompatActivity
+        implements  MainActivity_Recycler_Fragment.MainActivityRecyclerFragmentChannel {
+
+    //Todo: As MainActivityRecyclerFragmentChannel is the shadow of this activity
+    /*
+            we don't need to initialize this interface in this activity class
+
+            but we have to initialize that on Fragment onAttach() method.
+     */
+    public MainActivityChannel mMainActivityChannel;
 
     FloatingActionButton fab;
 
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements  MainActivity_Rec
 
 
 
-    public MainActivityChannel mMainActivityChannel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +61,8 @@ public class MainActivity extends AppCompatActivity implements  MainActivity_Rec
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //add new
-
+                //add new data By passing it to fragment this is only for isolation
                 mMainActivityChannel.passDataToFragment(new ArrayList<String>(Arrays.asList(title.getText().toString(), description.getText().toString())));
-                // m_MainActivityRecycler_Fragment.addData(title.getText().toString(),description.getText().toString() );
-
             }
         });
 
@@ -100,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements  MainActivity_Rec
     public void onBackPressed() {
 
 
+        // Todo: OnBack first hide the searchView then do as suped .
+        //true means method task done
         if (mMainActivityChannel.onBackPressed()) { // first execute onBackPressed of Interface codes and if the result true then execute default function of on backpress
             super.onBackPressed();
         }
@@ -114,13 +117,14 @@ public class MainActivity extends AppCompatActivity implements  MainActivity_Rec
         }
     }
 
-    //get Data from Fragment using interface
+    //get Result from Fragment using interface
     @Override
     public void passResult(ArrayList<?> params) {
 
         Toast.makeText(this, "" + params.get(0).toString(), Toast.LENGTH_SHORT).show();
     }
 
+    //get Data from Fragment
     @Override
     public void passData(ArrayList<?> params) {
         title.setText(params.get(0).toString());

@@ -6,6 +6,8 @@
 
 package com.mti.todo_app_with_firebase.Adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -21,15 +23,23 @@ import com.mti.todo_app_with_firebase.R;
 import com.mti.todo_app_with_firebase.model.ToDo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /***
  * Created by Tareq on 22,June,2018.
  */
 
+//Todo: this interface will create channel from viewHolder to Adapter
+interface ItemClickListener {
+
+    void onClick(View view, int position, boolean isLongClick);
+}
+
+//Todo: this viewHolder holds Ui
  class ListItemViewHolder  extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnCreateContextMenuListener {
 
-    ItemClickListener mItemClickListener;
+    private ItemClickListener mItemClickListener;
     TextView item_title, item_description;
 
 
@@ -63,23 +73,45 @@ import java.util.List;
 
  public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> implements Filterable {
 
-     MainActivity mMainActivity;
 
-     List<ToDo> mToDoListFiltered;
-     List<ToDo> mToDoList;
+     private Context mContext;
+
+     private List<ToDo> mToDoListFiltered;
+     private List<ToDo> mToDoList;
+
+      private static ItemClickDataChannel mItemClickDataChannel; //this thing must be static
 
 
-     public ListItemAdapter(MainActivity mainActivity, List<ToDo> toDoList) {
-         mMainActivity = mainActivity;
+
+
+
+     public ListItemAdapter(Context context) {
+         mContext = context;
+      }
+
+      public void updateAdapter(List<ToDo> toDoList){
+          mToDoListFiltered = toDoList;
+          mToDoList=toDoList;
+          notifyDataSetChanged();
+      }
+
+      //optional
+     public ListItemAdapter(Context context, List<ToDo> toDoList) {
+         mContext = context;
          mToDoListFiltered = toDoList;
          mToDoList=toDoList;
 
      }
 
+
+     public void setItemClickDataChannel(ItemClickDataChannel itemClickDataChannel){
+         mItemClickDataChannel=itemClickDataChannel;
+     }
+
      @NonNull
         @Override
         public ListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-         LayoutInflater inflater=LayoutInflater.from(mMainActivity.getBaseContext());
+         LayoutInflater inflater=LayoutInflater.from(mContext);
 
          View view=inflater.inflate(R.layout.list_item,parent,false);
 
@@ -89,24 +121,33 @@ import java.util.List;
 
         @Override
         public void onBindViewHolder(@NonNull ListItemViewHolder holder, int position) {
-//Todo: Load Data
+            //Todo: Load Data
 
             //Set data for item
             holder.item_title.setText(mToDoListFiltered.get(position).getTitle());
             holder.item_description.setText(mToDoListFiltered.get(position).getDescription());
 
+
+            //we can sh
             holder.setItemClickListener(new ItemClickListener() {
                 @Override
                 public void onClick(View view, int position, boolean isLongClick) {
                     //when user select item, data will auto set for text view
-                    mMainActivity.title.setText(mToDoListFiltered.get(position).getTitle());
-                    mMainActivity.description.setText(mToDoListFiltered.get(position).getDescription());
+                    if (!isLongClick){ //if not using long click
 
-                    mMainActivity.isUpdate=true; //Set flag is update -true
-                    mMainActivity.idSelectedItem= mToDoListFiltered.get(position).getId();
+                        //Todo: Pass the data using ItemClickDataChannel
+                        mItemClickDataChannel.onItemClickPassData(new ArrayList<Object>(Arrays.asList(
+                                mToDoListFiltered.get(position).getTitle(),
+                                mToDoListFiltered.get(position).getDescription()
+                        )));
 
+                     }
                 }
+
+
             });
+
+
         }
 
         @Override

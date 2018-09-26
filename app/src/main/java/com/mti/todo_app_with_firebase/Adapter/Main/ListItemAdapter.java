@@ -1,12 +1,17 @@
 /*
+ * Created by Tareq Islam on 9/26/18 2:42 PM
+ *
+ *  Last modified 9/26/18 2:10 AM
+ */
+
+/*
  * Created by Tareq Islam on 6/22/18 10:52 PM
  *
  *  Last modified 6/22/18 10:52 PM
  */
 
-package com.mti.todo_app_with_firebase.Adapter;
+package com.mti.todo_app_with_firebase.Adapter.Main;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +23,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.mti.todo_app_with_firebase.MainActivity;
 import com.mti.todo_app_with_firebase.R;
 import com.mti.todo_app_with_firebase.model.ToDo;
 
@@ -64,6 +68,7 @@ interface ItemClickListener {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        mItemClickListener.onClick(v, getAdapterPosition(), true);
         menu.setHeaderTitle("Select the action");
         menu.add(0, 0, getAdapterPosition(), "DELETE");
     }
@@ -139,9 +144,18 @@ interface ItemClickListener {
                         mItemClickDataChannel.onItemClickPassData(new ArrayList<Object>(Arrays.asList(
                                 mToDoListFiltered.get(position).getTitle(),
                                 mToDoListFiltered.get(position).getDescription()
-                        )));
+                        )),
+                                false);
 
-                     }
+                     }else{
+                        //Todo: On Long click it will pass only id so that we can do other thing like delete and etc
+                        mItemClickDataChannel.onItemClickPassData(new ArrayList<Object>(Arrays.asList(
+                                mToDoListFiltered.get(position).getId()
+                        )),
+                                true);
+
+                    }
+
                 }
 
 

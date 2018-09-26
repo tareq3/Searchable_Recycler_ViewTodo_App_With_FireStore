@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.mti.todo_app_with_firebase.UI.MainActivity_Recycler_Fragment;
+import com.mti.todo_app_with_firebase.UI.Main.MainActivity_Recycler_Fragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,6 +114,16 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.listTodo_frame, MainActivity_Recycler_Fragment.newInstance())
                     .commitNow();
+        }
+    }
+
+    private void removeFragment(){
+        android.support.v4.app.Fragment fragment=getSupportFragmentManager().findFragmentById(R.id.listTodo_frame);
+        if(fragment!=null){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(fragment)
+                    .commit();
         }
     }
 

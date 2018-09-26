@@ -1,24 +1,11 @@
-/*
- * Created by Tareq Islam on 9/26/18 12:53 AM
- *
- *  Last modified 9/26/18 12:45 AM
- */
 
-/*
- * Created by Tareq Islam on 9/24/18 1:01 PM
- *
- *  Last modified 9/24/18 12:57 PM
- */
 
-/*
- * Created by Tareq Islam on 9/24/18 12:48 PM
- *
- *  Last modified 9/24/18 12:48 PM
- */
-
-package com.mti.todo_app_with_firebase.UI;
+package com.mti.todo_app_with_firebase.UI.Main;
 
 import android.app.SearchManager;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,8 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.mti.todo_app_with_firebase.Adapter.ItemClickDataChannel;
-import com.mti.todo_app_with_firebase.Adapter.ListItemAdapter;
+import com.mti.todo_app_with_firebase.Adapter.Main.ItemClickDataChannel;
+import com.mti.todo_app_with_firebase.Adapter.Main.ListItemAdapter;
 import com.mti.todo_app_with_firebase.MainActivity;
 import com.mti.todo_app_with_firebase.MainActivityChannel;
 import com.mti.todo_app_with_firebase.R;
@@ -54,34 +41,32 @@ import java.util.UUID;
 
 public class MainActivity_Recycler_Fragment extends Fragment implements MainActivityChannel,ItemClickDataChannel {
 
-   public interface MainActivityRecyclerFragmentChannel{
+    public interface MainActivityRecyclerFragmentChannel{
         void passResult(ArrayList<?> params); //passes the Task Success result
 
         void passData(ArrayList<?> params); //passes the data from frag to activity
     }
 
-    //Primary List of Data
-    List<ToDo> mToDoList = new ArrayList<ToDo>(
-            Arrays.asList(
-                    new ToDo("1", "Eat", "eating should be controlled"),
-                    new ToDo("2", "Walk", "walking is good for health"),
-                    new ToDo("3", "Salat", "Is the best meditation in this world")
-            )
-    );
+    //Todo: Member variables here
+    private  Main_RecyclerFragment_ViewModel mMain_recyclerFragment_viewModel;
 
 
-    RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLayoutManagerRecyler;
+    private List<ToDo> mToDoList = new ArrayList<ToDo>();
 
-    ListItemAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManagerRecyler;
 
-    MainActivityRecyclerFragmentChannel mMainActivityRecyclerFragmentChannel;
+    private ListItemAdapter mAdapter;
+
+    private MainActivityRecyclerFragmentChannel mMainActivityRecyclerFragmentChannel;
+
+    private Context mContext;
 
     public static MainActivity_Recycler_Fragment newInstance() {
         return new MainActivity_Recycler_Fragment();
     }
 
-    Context mContext;
+
 
     //Need to change the Cast Activity name on attach with any activity
     @Override
@@ -110,6 +95,9 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //initializing viewmodel
+        mMain_recyclerFragment_viewModel=ViewModelProviders.of(this).get(Main_RecyclerFragment_ViewModel.class);
+
 
         mRecyclerView = getView().findViewById(R.id.listTodo_fragment);
         mRecyclerView.setHasFixedSize(true);
@@ -122,6 +110,14 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
 
 
         loadData();
+
+        //View model+LiveData will update the data of the adepter automatically when the data changes.
+        mMain_recyclerFragment_viewModel.getListTodo().observe(this, new Observer<List<ToDo>>() {
+            @Override
+            public void onChanged(@Nullable List<ToDo> toDoList) {
+                mAdapter.updateAdapter(toDoList); //Update data of the adapter
+            }
+        });
     }
 
 
@@ -132,32 +128,10 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
 
     }
 
-    public void addData(String s, String s1) {
 
-        String id = UUID.randomUUID().toString();
-        mToDoList.add(new ToDo(id, s, s1));
 
-        mAdapter.updateAdapter(mToDoList);
-        //Send meesage to Activity Data Loaded using interface
-        mMainActivityRecyclerFragmentChannel.passResult(new ArrayList<Object>(Arrays.asList("Data Updated")));
 
-    }
 
-    private void deleteItem(int order) {
-        Toast.makeText(mContext, "Delete Item at " + order, Toast.LENGTH_SHORT).show();
-        mToDoList.remove(order);
-
-        mAdapter.updateAdapter(mToDoList);
-        //Send meesage to Activity Data Loaded using interface
-        mMainActivityRecyclerFragmentChannel.passResult(new ArrayList<Object>(Arrays.asList("Data Updated")));
-
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        deleteItem(item.getOrder());
-        return super.onContextItemSelected(item);
-    }
 
 
     public SearchView mSearchView;
@@ -201,11 +175,6 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
     }
 
 
-    @Override
-    public void passDataToFragment(ArrayList<String> strings) {
-        addData(strings.get(0), strings.get(1));
-
-    }
 
     @Override
     public boolean onBackPressed() {
@@ -219,16 +188,61 @@ public class MainActivity_Recycler_Fragment extends Fragment implements MainActi
     }
 
 
+    private String curItemId; // this variable needed for delete edit of the items
 
+    //get Data from adapter using Interface of the adapter
     @Override
-    public void onItemClickPassData(ArrayList<?> params) {
-        Toast.makeText(mContext, "" + params.get(0).toString(), Toast.LENGTH_SHORT).show();
+    public void onItemClickPassData(ArrayList<?> params, boolean longClick) {
 
-        mMainActivityRecyclerFragmentChannel.passData(params);
+        if(!longClick) { //for onclick action we need title and description
+            Toast.makeText(mContext, "" + params.get(0).toString(), Toast.LENGTH_SHORT).show();
+
+            mMainActivityRecyclerFragmentChannel.passData(params);
+        }else{ //for long Click option we need only id
+            Toast.makeText(mContext, ""+params.get(0).toString(), Toast.LENGTH_SHORT).show();
+            curItemId=params.get(0).toString();
+        }
     }
 
 
 
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        deleteItem(); //On Delete select deleteItem
+        return super.onContextItemSelected(item);
+    }
+
+    private void deleteItem() {
+        Toast.makeText(mContext, "Delete Item at " + curItemId, Toast.LENGTH_SHORT).show();
+        //delete data through viewmodel
+        mMain_recyclerFragment_viewModel.deleteOfID(curItemId);
+
+
+        //Send meesage to Activity Data Loaded using interface
+        mMainActivityRecyclerFragmentChannel.passResult(new ArrayList<Object>(Arrays.asList("Data Updated")));
+
+    }
+
+
+
+    //From Activity
+    @Override
+    public void passDataToFragment(ArrayList<String> strings) {
+        addData(strings.get(0), strings.get(1));
+
+    }
+
+
+    private void addData(String s, String s1) {
+
+        String id = UUID.randomUUID().toString();
+        //insert data through viewmodel
+        mMain_recyclerFragment_viewModel.insertTodo(new ToDo(id, s, s1));
+
+        //Send meesage to Activity Data Loaded using interface
+        mMainActivityRecyclerFragmentChannel.passResult(new ArrayList<Object>(Arrays.asList("Data Updated")));
+
+    }
 }
 

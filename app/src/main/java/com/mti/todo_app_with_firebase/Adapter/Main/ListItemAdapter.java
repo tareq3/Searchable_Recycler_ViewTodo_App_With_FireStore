@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mti.todo_app_with_firebase.R;
 import com.mti.todo_app_with_firebase.model.ToDo;
@@ -40,6 +41,7 @@ interface ItemClickListener {
     void onClick(View view, int position, boolean isLongClick);
 }
 
+
 //Todo: this viewHolder holds Ui
  class ListItemViewHolder  extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnCreateContextMenuListener {
 
@@ -52,6 +54,7 @@ interface ItemClickListener {
 
         item_title = itemView.findViewById(R.id.item_Title);
         item_description = itemView.findViewById(R.id.item_Description);
+
         itemView.setOnClickListener(this);
         itemView.setOnCreateContextMenuListener(this);
     }
@@ -64,6 +67,7 @@ interface ItemClickListener {
     @Override
     public void onClick(View v) {
         mItemClickListener.onClick(v, getAdapterPosition(), false);
+
     }
 
     @Override
@@ -84,7 +88,7 @@ interface ItemClickListener {
      private List<ToDo> mToDoListFiltered;
      private List<ToDo> mToDoList;
 
-      private static ItemClickDataChannel mItemClickDataChannel; //this thing must be static
+      private  ItemClickDataChannel mItemClickDataChannel; //this thing must be static
 
 
 

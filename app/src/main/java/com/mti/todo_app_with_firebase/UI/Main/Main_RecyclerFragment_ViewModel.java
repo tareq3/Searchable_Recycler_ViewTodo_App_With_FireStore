@@ -21,14 +21,25 @@ import java.util.List;
  */
 public class Main_RecyclerFragment_ViewModel extends AndroidViewModel {
 
-    LiveData<List<ToDo>> mListTodo;
+    private LiveData<List<ToDo>> mListTodo;
 
-    MainActivityRepository mMainActivityRepository;
+    private MainActivityRepository mMainActivityRepository;
 
     public Main_RecyclerFragment_ViewModel(@NonNull Application application) {
         super(application);
         mMainActivityRepository=new MainActivityRepository(application);
-        mListTodo=mMainActivityRepository.getList_Todo_Data();
+
+        //Todo: Get Data from RestApi
+        mListTodo=mMainActivityRepository.getTodoList();
+
+
+        /*
+            mListTodo can be updated from either Api or Room
+
+        */
+
+        //Todo: Get Dta from Room
+        // mListTodo=mMainActivityRepository.getList_Todo_Data();
 
     }
 

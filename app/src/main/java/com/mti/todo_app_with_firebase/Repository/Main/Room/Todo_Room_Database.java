@@ -6,13 +6,13 @@
 
 package com.mti.todo_app_with_firebase.Repository.Main.Room;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.mti.todo_app_with_firebase.model.ToDo;
 
@@ -30,7 +30,7 @@ public abstract class Todo_Room_Database extends RoomDatabase {
         if(instance==null){  //when instance null
             synchronized (Todo_Room_Database.class){ //more than one thread trying to access Syncronize them
              if(instance==null){
-                 instance=Room.databaseBuilder(context.getApplicationContext(),
+                 instance= Room.databaseBuilder(context.getApplicationContext(),
                          Todo_Room_Database.class,"todos")
                  // Wipes and rebuilds instead of migrating if no Migration object.
                  // Migration is not part of this codelab.

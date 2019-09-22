@@ -7,9 +7,10 @@
 package com.mti.todo_app_with_firebase.UI.Main;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.mti.todo_app_with_firebase.Repository.Main.MainActivityRepository;
 import com.mti.todo_app_with_firebase.model.ToDo;

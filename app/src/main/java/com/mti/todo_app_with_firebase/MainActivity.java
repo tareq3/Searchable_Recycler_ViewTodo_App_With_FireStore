@@ -1,14 +1,18 @@
 package com.mti.todo_app_with_firebase;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mti.todo_app_with_firebase.UI.Main.MainActivity_Recycler_Fragment;
 
 import java.util.ArrayList;
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // toolbar fancy stuff
@@ -118,7 +122,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void removeFragment(){
-        android.support.v4.app.Fragment fragment=getSupportFragmentManager().findFragmentById(R.id.listTodo_frame);
+      Fragment fragment=getSupportFragmentManager().findFragmentById(R.id.listTodo_frame);
         if(fragment!=null){
             getSupportFragmentManager()
                     .beginTransaction()
